@@ -2,6 +2,7 @@
 using DLL.Repositories.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DLL.Repositories;
 
@@ -52,9 +53,9 @@ public class FilmRepository : IFilmRepository
         return await _appContext.Films.Include(f => f.Comments).ToListAsync();
     }
 
-    public async Task<IEnumerable<Film>?> GetByConditionAsync(Func<Film, bool> predicate)
+    public async Task<IEnumerable<Film>?> GetByConditionAsync(Expression<Func<Film, bool>> predicate)
     {
-        return _appContext.Films.Where(predicate).AsEnumerable();
+        return await _appContext.Films.Where(predicate).ToListAsync();
     }
 
     public async Task<Film?> GetByIdAsync(int id)
