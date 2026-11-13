@@ -1,15 +1,15 @@
+using BLL.MapperProfile;
 using BLL.Services;
 using DLL.Context;
 using DLL.Repositories;
 using DLL.Repositories.Interfaces;
 using Domain.Entities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using UI.MapperProfile;
+using UI.Validators.Comment;
 using UI.Validators.Film;
 using UI.Validators.User;
-using Microsoft.EntityFrameworkCore;
-using UI.Validators.Comment;
-using UI.MapperProfile;
-using BLL.MapperProfile;
 
 namespace homework10WEB_API
 {
@@ -37,7 +37,7 @@ namespace homework10WEB_API
             builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<UserService>();
 
-            builder.Services.AddTransient<IRepository<Film>, FilmRepository>();
+            builder.Services.AddTransient<IFilmRepository, FilmRepository>();
             builder.Services.AddTransient<FilmService>();
 
             builder.Services.AddTransient<IRepository<Comment>, CommentRepository>();

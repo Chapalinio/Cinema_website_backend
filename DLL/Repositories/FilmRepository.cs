@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Repositories;
 
-public class FilmRepository : IRepository<Film>
+public class FilmRepository : IFilmRepository
 {
     private readonly AppDbContext _appContext;
     public FilmRepository(AppDbContext context)
@@ -50,6 +50,11 @@ public class FilmRepository : IRepository<Film>
     public async Task<IEnumerable<Film>?> GetAllAsync()
     {
         return await _appContext.Films.Include(f => f.Comments).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Film>?> GetByCondition(Func<Film, bool> predicate)
+    {
+        return _appContext.Films.Where(predicate).AsEnumerable();
     }
 
     public async Task<Film?> GetByIdAsync(int id)

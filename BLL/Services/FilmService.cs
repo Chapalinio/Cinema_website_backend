@@ -7,9 +7,9 @@ namespace BLL.Services;
 
 public class FilmService
 {
-    private readonly IRepository<Film> _filmRepository;
+    private readonly IFilmRepository _filmRepository;
     private readonly IMapper _mapper;
-    public FilmService(IRepository<Film> repository, IMapper mapper)
+    public FilmService(IFilmRepository repository, IMapper mapper)
     {
         _filmRepository = repository;
         _mapper = mapper;
