@@ -39,6 +39,25 @@ public class FilmService
         return _mapper.Map<FilmDTO>(film);
     }
 
+    public async Task<List<FilmDTO>> SearchFilmByFiltersAsync(SearchFiltersDTO filters)
+    {
+        if (filters.Title == "" && filters.Genre == "" && filters.ReleaseYear == 0 && filters.Country == "" && filters.KeyWord == "")
+        {
+            return await GetAllAsync();
+        }
+
+        var filteredFilms = await _filmRepository.GetByConditionAsync(f =>
+            f.Title.ToLower().Contains(filters.Title.ToLower()) ||
+            f.Title.ToLower().Contains(filters.KeyWord.ToLower()) ||
+            f.Description.ToLower().Contains(filters.KeyWord.ToLower()) ||
+            f.Genre.ToLower().Contains(filters.Genre.ToLower()) ||
+            f.ReleaseYear == filters.ReleaseYear ||
+            f.Country.ToLower().Contains(filters.Country.ToLower())
+        );
+
+        return _mapper.Map<List<FilmDTO>>(filteredFilms);
+    }
+
     public async Task AddAsync(FilmDTO film)
     {
         await _filmRepository.AddAsync(_mapper.Map<Film>(film));

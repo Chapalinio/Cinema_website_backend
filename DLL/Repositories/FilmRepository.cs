@@ -52,7 +52,7 @@ public class FilmRepository : IFilmRepository
         return await _appContext.Films.Include(f => f.Comments).ToListAsync();
     }
 
-    public async Task<IEnumerable<Film>?> GetByCondition(Func<Film, bool> predicate)
+    public async Task<IEnumerable<Film>?> GetByConditionAsync(Func<Film, bool> predicate)
     {
         return _appContext.Films.Where(predicate).AsEnumerable();
     }

@@ -4,5 +4,5 @@ namespace DLL.Repositories.Interfaces;
 
 public interface IFilmRepository : IRepository<Film>
 {
-    public Task<IEnumerable<Film>?> GetByCondition(Func<Film, bool> predicate);
+    public Task<IEnumerable<Film>?> GetByConditionAsync(Func<Film, bool> predicate);
 }
