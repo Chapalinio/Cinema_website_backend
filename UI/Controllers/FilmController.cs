@@ -50,7 +50,7 @@ namespace UI.Controllers
             return Ok(_mapper.Map<FilmResponce>(film));
         }
 
-        [HttpGet("search")]
+        [HttpPost("search")]
         public async Task<ActionResult<List<FilmResponce>>> SearchFilmsByFilters([FromBody] SetFiltersRequest filters)
         {
             return _mapper.Map<List<FilmResponce>>(await _filmService.SearchFilmByFiltersAsync(_mapper.Map<SearchFiltersDTO>(filters)));
