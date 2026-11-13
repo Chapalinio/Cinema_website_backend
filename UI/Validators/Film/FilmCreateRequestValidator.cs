@@ -20,7 +20,19 @@ public class FilmCreateRequestValidator : AbstractValidator<FilmCreateRequest>
             .MinimumLength(1)
             .MaximumLength(500)
             .WithMessage("Description cannot exceed 500 characters.");
-    
+
+        RuleFor(f => f.Genre)
+            .NotEmpty()
+            .WithMessage("Genre is required.")
+            .MaximumLength(20)
+            .WithMessage("Genre cannot exceed 20 characters.");
+
+        RuleFor(f => f.Country)
+            .NotEmpty()
+            .WithMessage("Country is required.")
+            .MaximumLength(50)
+            .WithMessage("Country cannot exceed 50 characters.");
+
         RuleFor(f => f.PosterUrl)
             .NotEmpty()
             .WithMessage("PosterUrl is required.")

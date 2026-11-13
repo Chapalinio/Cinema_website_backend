@@ -19,6 +19,14 @@ public class FilmUpdateRequestValidator : AbstractValidator<FilmUpdateRequest>
             .MaximumLength(500)
             .WithMessage("Description cannot exceed 500 characters.");
 
+        RuleFor(f => f.Genre)
+            .MaximumLength(20)
+            .WithMessage("Genre cannot exceed 20 characters.");
+
+        RuleFor(f => f.Country)
+            .MaximumLength(50)
+            .WithMessage("Country cannot exceed 50 characters.");
+
         RuleFor(f => f.PosterUrl)
             .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute))
             .WithMessage("PosterUrl must be a valid URL.");
