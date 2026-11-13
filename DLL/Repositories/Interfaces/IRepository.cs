@@ -2,10 +2,10 @@
 
 public interface IRepository<T>
 {
-    void Add(T data);
-    void Edit(int id, T data);
+    Task AddAsync(T data);
+    Task EditAsync(int id, T data);
     void Remove(int id);
-    List<T>? GetAll();
-    T? GetById(int id);
-    void SaveChanges();
+    Task<IEnumerable<T>?> GetAllAsync();
+    Task<T?> GetByIdAsync(int id);
+    Task SaveChangesAsync();
 }

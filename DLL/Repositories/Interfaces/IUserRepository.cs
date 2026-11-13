@@ -3,6 +3,6 @@
 namespace DLL.Repositories.Interfaces;
 public interface IUserRepository : IRepository<User>
 {
-    bool Login(string login, string password);
-    int? GetIdByLogin(string login);
+    Task<bool> LoginAsync(string login, string password);
+    Task<int?> GetIdByLoginAsync(string login);
 }

@@ -24,9 +24,9 @@ namespace UI.Controllers
         }
 
         [HttpGet("all")]
-        public ActionResult<List<FilmResponce>> GetAllFilms()
+        public async Task<ActionResult<List<FilmResponce>>> GetAllFilmsAsync()
         {
-            var allFilms = _filmService.GetAll();
+            var allFilms = await _filmService.GetAllAsync();
 
             if (allFilms.Count == 0)
             {
@@ -37,9 +37,9 @@ namespace UI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<FilmResponce> GetFilmById([FromRoute] int id)
+        public async Task<ActionResult<FilmResponce>> GetFilmByIdAsync([FromRoute] int id)
         {
-            var film = _filmService.GetById(id);
+            var film = await _filmService.GetByIdAsync(id);
 
             if (film == null)
             {
@@ -50,26 +50,26 @@ namespace UI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult AddFilm([FromBody] FilmCreateRequest film)
+        public async Task<IActionResult> AddFilmAsync([FromBody] FilmCreateRequest film)
         {
             if (!_createValidator.Validate(film).IsValid)
             {
                 return BadRequest(_createValidator.Validate(film).Errors);
             }
 
-            _filmService.Add(_mapper.Map<FilmDTO>(film));
+            await _filmService.AddAsync(_mapper.Map<FilmDTO>(film));
             return Created();
         }
 
         [HttpPut("edit/{id:int}")]
-        public IActionResult EditFilm([FromRoute] int id, [FromBody] FilmUpdateRequest film)
+        public async Task<IActionResult> EditFilmAsync([FromRoute] int id, [FromBody] FilmUpdateRequest film)
         {
             if (!_updateValidator.Validate(film).IsValid)
             {
                 return BadRequest(_updateValidator.Validate(film).Errors);
             }
 
-            _filmService.Edit(id, _mapper.Map<FilmDTO>(film));
+            await _filmService.EditAsync(id, _mapper.Map<FilmDTO>(film));
             return NoContent();
         }
 

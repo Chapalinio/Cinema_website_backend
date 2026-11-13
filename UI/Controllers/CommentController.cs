@@ -23,9 +23,9 @@ public class CommentController : ControllerBase
     }
 
     [HttpGet("{title}")]
-    public ActionResult<List<CommentResponse>> GetCommentsByFilmTitle([FromRoute] string title)
+    public async Task<ActionResult<List<CommentResponse>>> GetCommentsByFilmTitleAsync([FromRoute] string title)
     {
-        var comments = _mapper.Map<List<CommentResponse>>(_commentService.GetAllByFilmTitle(title));
+        var comments = _mapper.Map<List<CommentResponse>>(await _commentService.GetAllByFilmTitleAsync(title));
         
         if(comments.Count == 0)
         {
@@ -36,22 +36,22 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost("add")]
-    public IActionResult CreateComment([FromBody] CommentCreateRequest comment)
+    public async Task<IActionResult> CreateCommentAsync([FromBody] CommentCreateRequest comment)
     {
-        var result = _commentCreateValidator.Validate(comment);
+        var result = await _commentCreateValidator.ValidateAsync(comment);
         if (!result.IsValid)
         {
             return BadRequest(result.Errors);
         }
 
-        _commentService.Create(_mapper.Map<CommentDTO>(comment));
+        await _commentService.CreateAsync(_mapper.Map<CommentDTO>(comment));
         return Created();
     }
 
     [HttpPut("edit/{id:int}")]
-    public IActionResult EditComment([FromRoute] int id, [FromBody] CommentCreateRequest comment)
+    public async Task<IActionResult> EditCommentAsync([FromRoute] int id, [FromBody] CommentCreateRequest comment)
     {
-        _commentService.Edit(id, _mapper.Map<CommentDTO>(comment));
+        await _commentService.EditAsync(id, _mapper.Map<CommentDTO>(comment));
         return NoContent();
     }
 

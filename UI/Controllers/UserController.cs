@@ -25,13 +25,13 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] UserRegisterRequest user)
+    public async Task<IActionResult> Register([FromBody] UserRegisterRequest user)
     {
         var result = _registerValidator.Validate(user);
 
         if (result.IsValid)
         {
-            _userService.Register(_mapper.Map<UserDTO>(user));
+            await _userService.RegisterAsync(_mapper.Map<UserDTO>(user));
             return Ok();
         }
 
@@ -39,10 +39,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] UserLoginRequest user)
+    public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
     {
         ValidationResult result = _loginValidator.Validate(user);
-        if (result.IsValid && _userService.Login(_mapper.Map<UserDTO>(user)))
+        if (result.IsValid && await _userService.LoginAsync(_mapper.Map<UserDTO>(user)))
         {
             return Ok();
         }
@@ -58,8 +58,8 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{login}")]
-    public ActionResult<int> GetUserIdByLogin([FromRoute] string login)
+    public async Task<ActionResult<int>> GetUserIdByLoginAsync([FromRoute] string login)
     {
-        return Ok(_userService.GetIdByLogin(login));
+        return Ok(await _userService.GetIdByLoginAsync(login));
     }
 }

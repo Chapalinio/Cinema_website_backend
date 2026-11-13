@@ -14,33 +14,33 @@ public class CommentService
         _mapper = mapper;
     }
 
-    public void Create(CommentDTO comment)
+    public async Task CreateAsync(CommentDTO comment)
     {
         Comment newComment = _mapper.Map<Comment>(comment);
         newComment.CreatedAt = DateTime.Now;
-        _commentRepository.Add(newComment);
+        await _commentRepository.AddAsync(newComment);
     }
 
-    public void Edit(int id, CommentDTO comment)
+    public async Task EditAsync(int id, CommentDTO comment)
     {
-        _commentRepository.Edit(id, _mapper.Map<Comment>(comment));
+        await _commentRepository.EditAsync(id, _mapper.Map<Comment>(comment));
     }
-    
+
     public void Remove(int id)
     {
         _commentRepository.Remove(id);
     }
 
-    public List<CommentDTO> GetAllByFilmTitle(string title)
+    public async Task<List<CommentDTO>> GetAllByFilmTitleAsync(string title)
     {
-        var comments = _commentRepository.GetAll();
-        
-        if(comments == null)
+        var comments = await _commentRepository.GetAllAsync();
+
+        if (comments == null)
         {
             return [];
         }
 
-        var responce = comments.Where(c => c.Film != null && c.Film.Title == title).ToList();
+        var responce = comments.Where(c => c.Film != null && c.Film.Title == title);
 
         return _mapper.Map<List<CommentDTO>>(responce);
     }

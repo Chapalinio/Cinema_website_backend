@@ -15,18 +15,18 @@ public class UserService
         _mapper = mapper;
     }
 
-    public void Register(UserDTO user)
+    public async Task RegisterAsync(UserDTO user)
     {
-        _userRepository.Add(_mapper.Map<User>(user));
+        await _userRepository.AddAsync(_mapper.Map<User>(user));
     }
 
-    public bool Login(UserDTO user)
+    public async Task<bool> LoginAsync(UserDTO user)
     {
-        return _userRepository.Login(user.Login, user.Password);
+        return await _userRepository.LoginAsync(user.Login, user.Password);
     }
 
-    public int? GetIdByLogin(string login)
+    public async Task<int?> GetIdByLoginAsync(string login)
     {
-        return _userRepository.GetIdByLogin(login);
+        return await _userRepository.GetIdByLoginAsync(login);
     }
 }

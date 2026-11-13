@@ -13,47 +13,47 @@ public class CommentRepository : IRepository<Comment>
         _appContext = context;
     }
 
-    public void Add(Comment comment)
+    public async Task AddAsync(Comment comment)
     {
-        _appContext.Comments.Add(comment);
-        SaveChanges();
+        await _appContext.Comments.AddAsync(comment);
+        await SaveChangesAsync();
     }
 
-    public void Edit(int id, Comment comment)
+    public async Task EditAsync(int id, Comment comment)
     {
-        var commentToEdit = GetById(id);
-        
-        if(commentToEdit != null)
+        var commentToEdit = await GetByIdAsync(id);
+
+        if (commentToEdit != null)
         {
             commentToEdit.Text = comment.Text;
             commentToEdit.Edited = true;
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public void Remove(int id)
+    public async void Remove(int id)
     {
-        var commentToDelete = GetById(id);
-        
-        if(commentToDelete != null)
+        var commentToDelete = await GetByIdAsync(id);
+
+        if (commentToDelete != null)
         {
             _appContext.Comments.Remove(commentToDelete);
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public List<Comment>? GetAll()
+    public async Task<IEnumerable<Comment>?> GetAllAsync()
     {
-        return _appContext.Comments.Include(c => c.Film).ToList();
+        return await _appContext.Comments.Include(c => c.Film).ToListAsync();
     }
 
-    public Comment? GetById(int id)
+    public async Task<Comment?> GetByIdAsync(int id)
     {
         return _appContext.Comments.FirstOrDefault(c => c.Id == id);
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        _appContext.SaveChanges();
+        await _appContext.SaveChangesAsync();
     }
 }

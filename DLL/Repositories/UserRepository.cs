@@ -1,6 +1,7 @@
 ﻿using DLL.Context;
 using DLL.Repositories.Interfaces;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Repositories;
 
@@ -13,53 +14,53 @@ public class UserRepository : IUserRepository
         _appContext = context;
     }
 
-    public void Add(User user)
+    public async Task AddAsync(User user)
     {
         if (_appContext.Users.FirstOrDefault(u => u.Login == user.Login) == null)
         {
-            _appContext.Users.Add(user);
-            SaveChanges();
+            await _appContext.Users.AddAsync(user);
+            await SaveChangesAsync();
         }
     }
 
-    public void Edit(int id, User user)
+    public async Task EditAsync(int id, User user)
     {
         var userToEdit = _appContext.Users.FirstOrDefault(u => u.Id == id);
 
-        if(userToEdit != null)
+        if (userToEdit != null)
         {
             userToEdit = user;
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public void Remove(int id)
+    public async void Remove(int id)
     {
         var userToDelete = _appContext.Users.FirstOrDefault(u => u.Id == id);
 
         if (userToDelete != null)
         {
             _appContext.Users.Remove(userToDelete);
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public List<User>? GetAll()
+    public async Task<IEnumerable<User>?> GetAllAsync()
     {
-        return _appContext.Users.ToList();
+        return await _appContext.Users.ToListAsync();
     }
 
-    public User? GetById(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
         return _appContext.Users.FirstOrDefault(u => u.Id == id);
     }
 
-    public int? GetIdByLogin(string login)
+    public async Task<int?> GetIdByLoginAsync(string login)
     {
         return _appContext.Users.FirstOrDefault(u => u.Login == login).Id;
     }
 
-    public bool Login(string login, string password)
+    public async Task<bool> LoginAsync(string login, string password)
     {
         if (_appContext.Users.FirstOrDefault(u => u.Login == login && u.Password == password) != null)
         {
@@ -69,8 +70,8 @@ public class UserRepository : IUserRepository
         return false;
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        _appContext.SaveChanges();
+        await _appContext.SaveChangesAsync();
     }
 }

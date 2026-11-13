@@ -15,11 +15,11 @@ public class FilmService
         _mapper = mapper;
     }
 
-    public List<FilmDTO> GetAll()
+    public async Task<List<FilmDTO>> GetAllAsync()
     {
-        var films = _filmRepository.GetAll();
+        var films = await _filmRepository.GetAllAsync();
 
-        if(films == null)
+        if (films == null)
         {
             return [];
         }
@@ -27,26 +27,26 @@ public class FilmService
         return _mapper.Map<List<FilmDTO>>(films);
     }
 
-    public FilmDTO? GetById(int id)
+    public async Task<FilmDTO?> GetByIdAsync(int id)
     {
-        var film = _filmRepository.GetById(id);
-        
-        if(film == null)
+        var film = await _filmRepository.GetByIdAsync(id);
+
+        if (film == null)
         {
             return null;
         }
-       
+
         return _mapper.Map<FilmDTO>(film);
     }
 
-    public void Add(FilmDTO film)
+    public async Task AddAsync(FilmDTO film)
     {
-        _filmRepository.Add(_mapper.Map<Film>(film));
+        await _filmRepository.AddAsync(_mapper.Map<Film>(film));
     }
 
-    public void Edit(int id, FilmDTO film)
+    public async Task EditAsync(int id, FilmDTO film)
     {
-        _filmRepository.Edit(id, _mapper.Map<Film>(film));
+        await _filmRepository.EditAsync(id, _mapper.Map<Film>(film));
     }
 
     public void Remove(int id)

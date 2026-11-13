@@ -13,19 +13,19 @@ public class FilmRepository : IRepository<Film>
         _appContext = context;
     }
 
-    public void Add(Film film)
+    public async Task AddAsync(Film film)
     {
-        if(_appContext.Films.FirstOrDefault(f => f.Title == film.Title) == null)
-        {   
-            _appContext.Films.Add(film);
-            SaveChanges();
+        if (_appContext.Films.FirstOrDefault(f => f.Title == film.Title) == null)
+        {
+            await _appContext.Films.AddAsync(film);
+            await SaveChangesAsync();
         }
     }
 
-    public void Edit(int id, Film film)
+    public async Task EditAsync(int id, Film film)
     {
         var filmToEdit = _appContext.Films.FirstOrDefault(f => f.Id == id);
-        if(filmToEdit != null)
+        if (filmToEdit != null)
         {
             filmToEdit.Title = film.Title;
             filmToEdit.Description = film.Description;
@@ -33,32 +33,32 @@ public class FilmRepository : IRepository<Film>
             filmToEdit.FilmUrl = film.FilmUrl;
             filmToEdit.ReleaseYear = film.ReleaseYear;
             filmToEdit.LengthInMinutes = film.LengthInMinutes;
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public void Remove(int id)
+    public async void Remove(int id)
     {
         var filmToDelete = _appContext.Films.FirstOrDefault(f => f.Id == id);
         if (filmToDelete != null)
         {
             _appContext.Films.Remove(filmToDelete);
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 
-    public List<Film>? GetAll()
+    public async Task<IEnumerable<Film>?> GetAllAsync()
     {
-        return _appContext.Films.Include(f => f.Comments).ToList();
+        return await _appContext.Films.Include(f => f.Comments).ToListAsync();
     }
 
-    public Film? GetById(int id)
+    public async Task<Film?> GetByIdAsync(int id)
     {
         return _appContext.Films.Include(f => f.Comments).FirstOrDefault(f => f.Id == id);
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        _appContext.SaveChanges();
+        await _appContext.SaveChangesAsync();
     }
 }
