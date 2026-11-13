@@ -41,18 +41,35 @@ public class FilmService
 
     public async Task<List<FilmDTO>> SearchFilmByFiltersAsync(SearchFiltersDTO filters)
     {
-        if (filters.Title == "" && filters.Genre == "" && filters.ReleaseYear == 0 && filters.Country == "" && filters.KeyWord == "")
+        if (string.IsNullOrWhiteSpace(filters.Title) &&
+            string.IsNullOrWhiteSpace(filters.Genre) &&
+            filters.ReleaseYear == 0 &&
+            string.IsNullOrWhiteSpace(filters.Country) &&
+            string.IsNullOrWhiteSpace(filters.KeyWord))
         {
             return await GetAllAsync();
         }
 
+        var hasTitle = !string.IsNullOrWhiteSpace(filters.Title);
+        var title = filters.Title.Trim().ToLower();
+
+        var hasGenre = !string.IsNullOrWhiteSpace(filters.Genre);
+        var genre = filters.Genre.Trim().ToLower();
+
+        var hasCountry = !string.IsNullOrWhiteSpace(filters.Country);
+        var country = filters.Country.Trim().ToLower();
+
+        var hasKeyword = !string.IsNullOrWhiteSpace(filters.KeyWord);
+        var keyword = filters.KeyWord.Trim().ToLower();
+
+        var hasYear = filters.ReleaseYear > 0;
+
         var filteredFilms = await _filmRepository.GetByConditionAsync(f =>
-            f.Title.ToLower().Contains(filters.Title.ToLower()) ||
-            f.Title.ToLower().Contains(filters.KeyWord.ToLower()) ||
-            f.Description.ToLower().Contains(filters.KeyWord.ToLower()) ||
-            f.Genre.ToLower().Contains(filters.Genre.ToLower()) ||
-            f.ReleaseYear == filters.ReleaseYear ||
-            f.Country.ToLower().Contains(filters.Country.ToLower())
+            (!hasTitle || f.Title.ToLower().Contains(title)) &&
+            (!hasGenre || f.Genre.ToLower().Contains(genre)) &&
+            (!hasCountry || f.Country.ToLower().Contains(country)) &&
+            (!hasYear || f.ReleaseYear == filters.ReleaseYear) &&
+            (!hasKeyword || f.Title.ToLower().Contains(keyword) || f.Description.ToLower().Contains(keyword))
         );
 
         return _mapper.Map<List<FilmDTO>>(filteredFilms);
