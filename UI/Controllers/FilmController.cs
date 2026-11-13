@@ -1,9 +1,10 @@
-﻿using BLL.Services;
-using UI.Validators.Film;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using UI.Contracts.Film;
+﻿using AutoMapper;
 using BLL.DTOs;
+using BLL.Services;
+using Microsoft.AspNetCore.Mvc;
+using UI.Contracts.Common;
+using UI.Contracts.Film;
+using UI.Validators.Film;
 
 namespace UI.Controllers
 {
@@ -32,7 +33,7 @@ namespace UI.Controllers
             {
                 return NotFound();
             }
-            
+
             return Ok(_mapper.Map<List<FilmResponce>>(allFilms));
         }
 
@@ -47,6 +48,12 @@ namespace UI.Controllers
             }
 
             return Ok(_mapper.Map<FilmResponce>(film));
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<List<FilmResponce>>> SearchFilmsByFilters([FromBody] SetFiltersRequest filters)
+        {
+            return _mapper.Map<List<FilmResponce>>(await _filmService.SearchFilmByFiltersAsync(_mapper.Map<SearchFiltersDTO>(filters)));
         }
 
         [HttpPost("add")]
