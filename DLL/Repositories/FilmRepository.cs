@@ -31,6 +31,8 @@ public class FilmRepository : IFilmRepository
             filmToEdit.Title = film.Title;
             filmToEdit.Description = film.Description;
             filmToEdit.PosterUrl = film.PosterUrl;
+            filmToEdit.Genre = film.Genre;
+            filmToEdit.Country = film.Country;
             filmToEdit.FilmUrl = film.FilmUrl;
             filmToEdit.ReleaseYear = film.ReleaseYear;
             filmToEdit.LengthInMinutes = film.LengthInMinutes;
