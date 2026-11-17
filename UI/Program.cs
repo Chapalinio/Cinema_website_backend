@@ -34,8 +34,7 @@ namespace homework10WEB_API
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("def")));
 
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
-            builder.Services.AddTransient<UserService>();
+            builder.Services.AddTransient<IdentityAuthService>();
 
             builder.Services.AddTransient<IFilmRepository, FilmRepository>();
             builder.Services.AddTransient<FilmService>();
@@ -51,6 +50,19 @@ namespace homework10WEB_API
             builder.Services.AddValidatorsFromAssemblyContaining<UserUpdateRequestValidator>();
 
             builder.Services.AddValidatorsFromAssemblyContaining<CommentCreateValidator>();
+
+            builder.Services.AddIdentityCore<User>(options =>
+            {
+                //Password
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 6;
+
+                //Login
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+            }).AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddAutoMapper(opt =>
             {

@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace BLL.DTOs;
+﻿namespace BLL.DTOs;
 
 public class CommentDTO
 {
@@ -10,5 +8,5 @@ public class CommentDTO
     public DateTime CreatedAt { get; set; }
     public bool Edited { get; set; }
     public int FilmId { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 }

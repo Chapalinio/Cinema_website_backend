@@ -1,10 +1,9 @@
-﻿using BLL.Services;
-using FluentValidation.Results;
-using UI.Validators.User;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using BLL.DTOs;
+using BLL.Services;
+using Microsoft.AspNetCore.Mvc;
 using UI.Contracts.User;
+using UI.Validators.User;
 
 namespace UI.Controllers;
 
@@ -12,54 +11,49 @@ namespace UI.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IdentityAuthService _authService;
     private readonly UserLoginRequestValidator _loginValidator;
     private readonly UserRegisterRequestValidator _registerValidator;
     private readonly IMapper _mapper;
-    public UserController(UserService service, UserLoginRequestValidator loginValidator, UserRegisterRequestValidator registerValidator, IMapper mapper)
+    public UserController(IdentityAuthService authService, UserLoginRequestValidator loginValidator, UserRegisterRequestValidator registerValidator, IMapper mapper)
     {
-        _userService = service;
+        _authService = authService;
         _loginValidator = loginValidator;
         _registerValidator = registerValidator;
         _mapper = mapper;
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserRegisterRequest user)
+    public async Task<ActionResult<string>> Register([FromBody] UserRegisterRequest user)
     {
-        var result = _registerValidator.Validate(user);
+        var validationResult = _registerValidator.Validate(user);
+        var registerResult = await _authService.Register(_mapper.Map<UserDTO>(user), user.Password);
 
-        if (result.IsValid)
+        if (!validationResult.IsValid)
         {
-            await _userService.RegisterAsync(_mapper.Map<UserDTO>(user));
-            return Ok();
+            return BadRequest(validationResult.Errors);
         }
 
-        return BadRequest(result.Errors);
+        if (!registerResult.Success)
+        {
+            return BadRequest(registerResult.Errors);
+        }
+
+        return Ok(registerResult.Data);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
+    public async Task<ActionResult<string>> Login([FromBody] UserLoginRequest user)
     {
-        ValidationResult result = _loginValidator.Validate(user);
-        if (result.IsValid && await _userService.LoginAsync(_mapper.Map<UserDTO>(user)))
-        {
-            return Ok();
-        }
+        var result = await _authService.Login(user.Login, user.Password);
 
-        if(result.Errors.Count > 0)
+        if (result.Success)
         {
-            return BadRequest(result.Errors);
+            return Ok(result.Data);
         }
         else
         {
-            return NotFound();
+            return BadRequest(result.Errors);
         }
-    }
-
-    [HttpGet("{login}")]
-    public async Task<ActionResult<int>> GetUserIdByLoginAsync([FromRoute] string login)
-    {
-        return Ok(await _userService.GetIdByLoginAsync(login));
     }
 }
