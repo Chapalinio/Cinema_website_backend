@@ -1,15 +1,15 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLL.Context;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
-    public DbSet<User> Users { get; set; }
     public DbSet<Film> Films { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
@@ -19,8 +19,6 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(e =>
         {
-            e.HasKey(u => u.Id);
-
             e.HasMany(u => u.Comments)
             .WithOne(c => c.User)
             .HasForeignKey(c => c.UserId)
