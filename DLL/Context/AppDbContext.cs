@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Film> Films { get; set; }
+    public DbSet<FilmSession> FilmSessions { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,7 +36,14 @@ public class AppDbContext : DbContext
             .WithOne(c => c.Film)
             .HasForeignKey(c => c.FilmId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasMany(f => f.FilmSessions)
+            .WithOne(fs => fs.Film)
+            .HasForeignKey(fs => fs.FilmId)
+            .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.Entity<FilmSession>(e => e.HasKey(fs => fs.Id));
 
         modelBuilder.Entity<Comment>(e => e.HasKey(c => c.Id));
     }
