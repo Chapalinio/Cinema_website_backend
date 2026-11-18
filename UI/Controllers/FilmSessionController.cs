@@ -35,7 +35,7 @@ namespace UI.Controllers
             {
                 if (serviceResult.Succeed)
                 {
-                    return Ok(serviceResult.Data);
+                    return Created();
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace UI.Controllers
             }
         }
 
-        [HttpDelete("remove/{id: int}")]
+        [HttpDelete("remove/{id:int}")]
         public IActionResult RemoveSession([FromRoute] int id)
         {
             _filmSessionService.RemoveSession(id);
