@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using UI.MapperProfile;
 using UI.Validators.Comment;
 using UI.Validators.Film;
+using UI.Validators.FilmSession;
 using UI.Validators.User;
 
 namespace homework10WEB_API
@@ -48,6 +49,9 @@ namespace homework10WEB_API
 
             builder.Services.AddValidatorsFromAssemblyContaining<FilmCreateRequestValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<FilmUpdateRequestValidator>();
+
+            builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionCreateRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionUpdateRequestValidator>();
 
             builder.Services.AddValidatorsFromAssemblyContaining<UserLoginRequestValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
