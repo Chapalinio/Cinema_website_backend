@@ -13,4 +13,5 @@ public class Film
     public int LengthInMinutes { get; set; }
 
     public List<Comment>? Comments { get; set; }
+    public List<FilmSession>? FilmSessions { get; set; }
 }
