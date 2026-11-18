@@ -11,5 +11,6 @@ public class DtoToEntityProfile : Profile
         CreateMap<UserDTO, User>().ReverseMap();
         CreateMap<FilmDTO, Film>().ReverseMap();
         CreateMap<CommentDTO, Comment>().ReverseMap();
+        CreateMap<FilmSessionDTO, FilmSession>().ReverseMap();
     }
 }
