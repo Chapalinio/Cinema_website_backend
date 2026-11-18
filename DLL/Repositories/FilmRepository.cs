@@ -42,7 +42,7 @@ public class FilmRepository : IFilmRepository
 
     public async void Remove(int id)
     {
-        var filmToDelete = _appContext.Films.FirstOrDefault(f => f.Id == id);
+        var filmToDelete = _appContext.Films.Include(f => f.FilmSessions).FirstOrDefault(f => f.Id == id);
         if (filmToDelete != null && filmToDelete.FilmSessions == null)
         {
             _appContext.Films.Remove(filmToDelete);
