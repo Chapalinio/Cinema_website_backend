@@ -37,6 +37,9 @@ namespace homework10WEB_API
             builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<UserService>();
 
+            builder.Services.AddTransient<IFilmSessionRepository, FilmSessionRepository>();
+            builder.Services.AddTransient<FilmSessionService>();
+
             builder.Services.AddTransient<IFilmRepository, FilmRepository>();
             builder.Services.AddTransient<FilmService>();
 
