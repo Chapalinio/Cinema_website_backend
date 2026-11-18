@@ -4,6 +4,7 @@ using Domain.Entities;
 using UI.Contracts.Comment;
 using UI.Contracts.Common;
 using UI.Contracts.Film;
+using UI.Contracts.FilmSession;
 using UI.Contracts.User;
 
 namespace UI.MapperProfile;
@@ -26,5 +27,9 @@ public class ReqResToDtoProfile : Profile
         CreateMap<CommentResponse, Comment>().ReverseMap();
 
         CreateMap<SetFiltersRequest, SearchFiltersDTO>().ReverseMap();
+
+        CreateMap<FilmSessionCreateRequest, FilmSessionDTO>().ReverseMap();
+        CreateMap<FilmSessionUpdateRequest, FilmSessionDTO>().ReverseMap();
+        CreateMap<FilmSessionResponce, FilmSessionDTO>().ReverseMap();
     }
 }
