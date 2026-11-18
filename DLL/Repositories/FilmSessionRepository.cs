@@ -56,12 +56,12 @@ public class FilmSessionRepository : IFilmSessionRepository
 
     public async Task<IEnumerable<FilmSession>?> GetAllAsync()
     {
-        return await _dbContext.FilmSessions.ToListAsync();
+        return await _dbContext.FilmSessions.Include(fs => fs.Film).ToListAsync();
     }
 
     public async Task<FilmSession?> GetByIdAsync(int id)
     {
-        return _dbContext.FilmSessions.FirstOrDefault(fs => fs.Id == id);
+        return _dbContext.FilmSessions.Include(fs => fs.Film).FirstOrDefault(fs => fs.Id == id);
     }
 
     public void Remove(int id)
