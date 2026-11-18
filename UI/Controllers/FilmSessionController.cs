@@ -29,10 +29,11 @@ namespace UI.Controllers
         public async Task<IActionResult> AddSessionAsync([FromBody] FilmSessionCreateRequest req)
         {
             var validationResult = await _filmSessionCreateValidator.ValidateAsync(req);
-            var serviceResult = await _filmSessionService.AddSessionAsync(_mapper.Map<FilmSessionDTO>(req));
 
             if (validationResult.IsValid)
             {
+                var serviceResult = await _filmSessionService.AddSessionAsync(_mapper.Map<FilmSessionDTO>(req));
+
                 if (serviceResult.Succeed)
                 {
                     return Created();
@@ -44,7 +45,7 @@ namespace UI.Controllers
             }
             else
             {
-                return BadRequest(validationResult.Errors);
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
             }
         }
 
@@ -52,10 +53,11 @@ namespace UI.Controllers
         public async Task<IActionResult> EditSessionAsync([FromRoute] int id, [FromBody] FilmSessionUpdateRequest req)
         {
             var validationResult = await _filmSessionUpdateValidator.ValidateAsync(req);
-            var serviceResult = await _filmSessionService.EditSessionAsync(id, _mapper.Map<FilmSessionDTO>(req));
 
             if (validationResult.IsValid)
             {
+                var serviceResult = await _filmSessionService.EditSessionAsync(id, _mapper.Map<FilmSessionDTO>(req));
+
                 if (serviceResult.Succeed)
                 {
                     return Ok(serviceResult.Data);
@@ -67,7 +69,7 @@ namespace UI.Controllers
             }
             else
             {
-                return BadRequest(validationResult.Errors);
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
             }
         }
 
