@@ -17,7 +17,7 @@ public class FilmSessionService
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> AddSession(FilmSessionDTO filmSession)
+    public async Task<Result<string>> AddSessionAsync(FilmSessionDTO filmSession)
     {
         var result = new Result<string>();
 
@@ -31,12 +31,13 @@ public class FilmSessionService
         {
             await _filmSessionRepository.AddAsync(_mapper.Map<FilmSession>(filmSession));
             result.Succeed = true;
+            result.Data = "Session successfully added.";
         }
 
         return result;
     }
 
-    public async Task<Result<string>> EditSession(int id, FilmSessionDTO filmSession)
+    public async Task<Result<string>> EditSessionAsync(int id, FilmSessionDTO filmSession)
     {
         var result = new Result<string>();
 
@@ -50,6 +51,7 @@ public class FilmSessionService
         {
             await _filmSessionRepository.EditAsync(id, _mapper.Map<FilmSession>(filmSession));
             result.Succeed = true;
+            result.Data = "Session successfully edited.";
         }
 
         return result;
@@ -60,7 +62,7 @@ public class FilmSessionService
         _filmSessionRepository.Remove(id);
     }
 
-    public async Task<Result<List<FilmSessionDTO>>> GetAllSessions()
+    public async Task<Result<List<FilmSessionDTO>>> GetAllSessionsAsync()
     {
         var result = new Result<List<FilmSessionDTO>>();
         var filmSessions = _mapper.Map<List<FilmSessionDTO>>(await _filmSessionRepository.GetAllAsync());
