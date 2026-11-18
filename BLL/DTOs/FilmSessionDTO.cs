@@ -8,4 +8,5 @@ public class FilmSessionDTO
     public int AvailableSeats { get; set; }
     public DateTime StartsAt { get; set; }
     public int FilmId { get; set; }
+    public string FilmName { get; set; } = string.Empty;
 }
