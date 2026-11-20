@@ -15,7 +15,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261120125708_add-identity";
+    public override string LastMigrationId => "20261120205908_AddNewUserFields";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -139,6 +139,10 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<int>("Age")
                     .HasColumnType("INTEGER");
 
+                b.Property<string>("City")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
                 b.Property<string>("ConcurrencyStamp")
                     .IsConcurrencyToken()
                     .HasColumnType("TEXT");
@@ -149,6 +153,10 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<bool>("EmailConfirmed")
                     .HasColumnType("INTEGER");
+
+                b.Property<string>("FavouriteGenre")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
                 b.Property<bool>("LockoutEnabled")
                     .HasColumnType("INTEGER");

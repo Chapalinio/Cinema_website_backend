@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DLL.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-[Migration("20261120125708_add-identity")]
-partial class _20261120125708_addidentity
+[Migration("20261120205701_SyncSnapshot")]
+partial class _20261120205701_SyncSnapshot
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DLL.Migrations;
 
 /// <inheritdoc />
-public partial class _20261120125708_addidentity : Migration
+public partial class _20261120205701_SyncSnapshot : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
