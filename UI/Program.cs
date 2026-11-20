@@ -12,79 +12,87 @@ using UI.Validators.Film;
 using UI.Validators.FilmSession;
 using UI.Validators.User;
 
-namespace homework10WEB_API
+namespace homework10WEB_API;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddCors(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddCors(options =>
+            options.AddPolicy("AllowSpecificOrigin", policy =>
             {
-                options.AddPolicy("AllowSpecificOrigin", policy =>
-                {
-                    policy.WithOrigins("http://localhost:4200") // here change on your front-end url
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                policy.WithOrigins("http://localhost:4200") // here change on your front-end url
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
             });
+        });
 
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApi();
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("def")));
+        builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("def")));
 
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
-            builder.Services.AddTransient<UserService>();
+        builder.Services.AddIdentityCore<User>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequiredLength = 6;
 
-            builder.Services.AddTransient<IFilmSessionRepository, FilmSessionRepository>();
-            builder.Services.AddTransient<FilmSessionService>();
+            options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-@";
+        }).AddEntityFrameworkStores<AppDbContext>();
 
-            builder.Services.AddTransient<IFilmRepository, FilmRepository>();
-            builder.Services.AddTransient<FilmService>();
+        builder.Services.AddTransient<AuthService>();
 
-            builder.Services.AddTransient<IRepository<Comment>, CommentRepository>();
-            builder.Services.AddTransient<CommentService>();
+        builder.Services.AddTransient<IFilmSessionRepository, FilmSessionRepository>();
+        builder.Services.AddTransient<FilmSessionService>();
 
-            builder.Services.AddValidatorsFromAssemblyContaining<FilmCreateRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<FilmUpdateRequestValidator>();
+        builder.Services.AddTransient<IFilmRepository, FilmRepository>();
+        builder.Services.AddTransient<FilmService>();
 
-            builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionCreateRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionUpdateRequestValidator>();
+        builder.Services.AddTransient<IRepository<Comment>, CommentRepository>();
+        builder.Services.AddTransient<CommentService>();
 
-            builder.Services.AddValidatorsFromAssemblyContaining<UserLoginRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UserUpdateRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<FilmCreateRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<FilmUpdateRequestValidator>();
 
-            builder.Services.AddValidatorsFromAssemblyContaining<CommentCreateValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionCreateRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionUpdateRequestValidator>();
 
-            builder.Services.AddAutoMapper(opt =>
+        builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
+
+        builder.Services.AddValidatorsFromAssemblyContaining<CommentCreateValidator>();
+
+        builder.Services.AddAutoMapper(opt =>
+        {
+            opt.AddProfile<ReqResToDtoProfile>();
+            opt.AddProfile<DtoToEntityProfile>();
+        });
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
             {
-                opt.AddProfile<ReqResToDtoProfile>();
-                opt.AddProfile<DtoToEntityProfile>();
+                options.SwaggerEndpoint("/openapi/v1.json", "Really cool cinema web site");
             });
-
-            var app = builder.Build();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/openapi/v1.json", "Really cool cinema web site");
-                });
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseCors("AllowSpecificOrigin");
-
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseCors("AllowSpecificOrigin");
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
     }
 }
