@@ -13,21 +13,23 @@ public class ReqResToDtoProfile : Profile
 {
     public ReqResToDtoProfile()
     {
+        //USER
         CreateMap<UserRegisterRequest, UserDTO>().ReverseMap();
-        CreateMap<UserLoginRequest, UserDTO>().ReverseMap();
-        CreateMap<UserUpdateRequest, UserDTO>().ReverseMap();
-        CreateMap<UserResponce, UserDTO>().ReverseMap();
 
+        //FILM
         CreateMap<FilmCreateRequest, FilmDTO>().ReverseMap();
         CreateMap<FilmUpdateRequest, FilmDTO>().ReverseMap();
         CreateMap<FilmResponce, FilmDTO>().ReverseMap();
 
+        //COMMENT
         CreateMap<CommentCreateRequest, CommentDTO>().ReverseMap();
         CreateMap<CommentResponse, CommentDTO>().ReverseMap();
         CreateMap<CommentResponse, Comment>().ReverseMap();
 
+        //FILTERS
         CreateMap<SetFiltersRequest, SearchFiltersDTO>().ReverseMap();
 
+        //FILM SESSION
         CreateMap<FilmSessionCreateRequest, FilmSessionDTO>().ReverseMap();
         CreateMap<FilmSessionUpdateRequest, FilmSessionDTO>().ReverseMap();
         CreateMap<FilmSessionResponce, FilmSessionDTO>().ReverseMap();
