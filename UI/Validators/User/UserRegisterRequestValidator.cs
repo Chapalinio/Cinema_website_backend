@@ -7,17 +7,20 @@ public class UserRegisterRequestValidator : AbstractValidator<UserRegisterReques
 {
     public UserRegisterRequestValidator()
     {
-        RuleFor(u => u.Login)
-            .NotEmpty().WithMessage("Login is required")
-            .MinimumLength(5).WithMessage("Login must be at least 5 characters long");
+        RuleFor(u => u.Email)
+            .NotEmpty().WithMessage("Email is required")
+            .EmailAddress().WithMessage("Invalid email format")
+            .MaximumLength(256).WithMessage("Email cannot exceed 256 characters");
 
         RuleFor(u => u.Password)
             .NotEmpty().WithMessage("Password is required")
             .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$").WithMessage("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character from @$!%*?&");
+            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$")
+            .WithMessage("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character from @$!%*?&");
 
         RuleFor(u => u.ConfirmPassword)
-            .Equal(u => u.Password).WithMessage("Comfirm password do not equal password");
+            .NotEmpty().WithMessage("Confirm password is required")
+            .Equal(u => u.Password).WithMessage("Confirm password does not match password");
 
         RuleFor(u => u.Name)
             .NotEmpty().WithMessage("Name is required")
@@ -30,7 +33,6 @@ public class UserRegisterRequestValidator : AbstractValidator<UserRegisterReques
             .MaximumLength(70).WithMessage("Surname cannot exceed 70 characters");
 
         RuleFor(u => u.Age)
-            .NotNull().WithMessage("Age is required")
             .InclusiveBetween(18, 120).WithMessage("Age must be between 18 and 120");
     }
 }
