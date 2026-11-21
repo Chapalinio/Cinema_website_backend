@@ -7,6 +7,11 @@ public class UserRegisterRequestValidator : AbstractValidator<UserRegisterReques
 {
     public UserRegisterRequestValidator()
     {
+        RuleFor(u => u.UserName)
+            .NotEmpty().WithMessage("User name is required")
+            .MinimumLength(3).WithMessage("User name must be at least 3 characters long")
+            .MaximumLength(30).WithMessage("User name cannot exceed 30 characters");
+
         RuleFor(u => u.Email)
             .NotEmpty().WithMessage("Email is required")
             .EmailAddress().WithMessage("Invalid email format")
@@ -21,6 +26,12 @@ public class UserRegisterRequestValidator : AbstractValidator<UserRegisterReques
         RuleFor(u => u.ConfirmPassword)
             .NotEmpty().WithMessage("Confirm password is required")
             .Equal(u => u.Password).WithMessage("Confirm password does not match password");
+
+        RuleFor(u => u.City)
+            .NotEmpty().WithMessage("City is required");
+
+        RuleFor(u => u.FavouriteGenre)
+            .NotEmpty().WithMessage("Favourite genre is required");
 
         RuleFor(u => u.Name)
             .NotEmpty().WithMessage("Name is required")
