@@ -22,26 +22,41 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserRegisterRequest user)
+    public async Task<ActionResult<UserResponce>> Register([FromBody] UserRegisterRequest user)
     {
         var validationResult = _registerValidator.Validate(user);
 
         if (validationResult.IsValid)
         {
-            var registrationResult = await _authService.RegisterUserAsync(_mapper.Map<UserDTO>(user), user.Password);
+            var responce = await _authService.RegisterUserAsync(_mapper.Map<UserDTO>(user), user.Password);
 
-            if (registrationResult.Succeed)
+            if (responce.Succeed)
             {
-                return Ok(registrationResult.Data);
+                return Ok(_mapper.Map<UserResponce>(responce.Data));
             }
             else
             {
-                return BadRequest(registrationResult.Errors);
+                return BadRequest(responce.Errors);
             }
         }
         else
         {
             return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+        }
+    }
+
+    [HttpGet("get-profile/{id}")]
+    public async Task<ActionResult<UserProfileResponce>> GetUserProfile([FromRoute] string id)
+    {
+        var responce = await _authService.GetUserById(id);
+
+        if (responce.Succeed)
+        {
+            return Ok(_mapper.Map<UserProfileResponce>(responce.Data));
+        }
+        else
+        {
+            return NotFound(responce.Errors);
         }
     }
 }
