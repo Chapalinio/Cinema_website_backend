@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BLL.DTOs;
+using BLL.DTOs.User;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 using UI.Contracts.User;
@@ -13,18 +13,20 @@ public class UserController : ControllerBase
 {
     private readonly AuthService _authService;
     private readonly UserRegisterRequestValidator _registerValidator;
+    private readonly UserLoginRequestValidator _loginValidator;
     private readonly IMapper _mapper;
-    public UserController(AuthService service, UserRegisterRequestValidator registerValidator, IMapper mapper)
+    public UserController(AuthService service, UserRegisterRequestValidator registerValidator, IMapper mapper, UserLoginRequestValidator loginValidator)
     {
         _authService = service;
         _registerValidator = registerValidator;
         _mapper = mapper;
+        _loginValidator = loginValidator;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<UserResponce>> Register([FromBody] UserRegisterRequest user)
     {
-        var validationResult = _registerValidator.Validate(user);
+        var validationResult = await _registerValidator.ValidateAsync(user);
 
         if (validationResult.IsValid)
         {
@@ -45,10 +47,34 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPost("login")]
+    public async Task<ActionResult<bool>> Login([FromBody] UserLoginRequest req)
+    {
+        var validationResult = await _loginValidator.ValidateAsync(req);
+
+        if (validationResult.IsValid)
+        {
+            var responce = await _authService.LoginAsync(_mapper.Map<UserLoginDTO>(req));
+
+            if (responce.Succeed)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return BadRequest(false);
+            }
+        }
+        else
+        {
+            return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+        }
+    }
+
     [HttpGet("get-profile/{id}")]
     public async Task<ActionResult<UserProfileResponce>> GetUserProfile([FromRoute] string id)
     {
-        var responce = await _authService.GetUserById(id);
+        var responce = await _authService.GetUserByIdAsync(id);
 
         if (responce.Succeed)
         {
