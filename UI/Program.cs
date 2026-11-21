@@ -5,6 +5,7 @@ using DLL.Repositories;
 using DLL.Repositories.Interfaces;
 using Domain.Entities;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UI.MapperProfile;
 using UI.Validators.Comment;
@@ -45,7 +46,11 @@ public class Program
 
             options.User.RequireUniqueEmail = true;
             options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-";
-        }).AddEntityFrameworkStores<AppDbContext>();
+
+            options.Lockout.AllowedForNewUsers = true;
+            options.Lockout.MaxFailedAccessAttempts = 3;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+        }).AddEntityFrameworkStores<AppDbContext>().AddSignInManager();
 
         builder.Services.AddTransient<AuthService>();
 
@@ -65,6 +70,7 @@ public class Program
         builder.Services.AddValidatorsFromAssemblyContaining<FilmSessionUpdateRequestValidator>();
 
         builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<UserLoginRequestValidator>();
 
         builder.Services.AddValidatorsFromAssemblyContaining<CommentCreateValidator>();
 
