@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
+using BLL.DTOs.User;
 using Domain.Entities;
 using UI.Contracts.Comment;
 using UI.Contracts.Common;
@@ -17,6 +18,7 @@ public class ReqResToDtoProfile : Profile
         CreateMap<UserRegisterRequest, UserDTO>().ReverseMap();
         CreateMap<UserResponce, UserDTO>().ReverseMap();
         CreateMap<UserProfileResponce, UserDTO>().ReverseMap();
+        CreateMap<UserLoginRequest, UserLoginDTO>();
 
         //FILM
         CreateMap<FilmCreateRequest, FilmDTO>().ReverseMap();

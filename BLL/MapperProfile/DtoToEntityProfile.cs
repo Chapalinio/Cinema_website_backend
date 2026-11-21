@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
+using BLL.DTOs.User;
 using Domain.Entities;
 
 namespace BLL.MapperProfile;
