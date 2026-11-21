@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BLL.DTOs;
+using BLL.DTOs.User;
 using BLL.Models;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +10,12 @@ public class AuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
-    public AuthService(UserManager<User> userManager, IMapper mapper)
+    private readonly SignInManager<User> _signInManager;
+    public AuthService(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _mapper = mapper;
+        _signInManager = signInManager;
     }
 
     public async Task<Result<UserDTO>> RegisterUserAsync(UserDTO user, string password)
@@ -37,7 +39,42 @@ public class AuthService
         return responce;
     }
 
-    public async Task<Result<UserDTO>> GetUserById(string id)
+    public async Task<Result<string>> LoginAsync(UserLoginDTO user)
+    {
+        var responce = new Result<string>();
+
+        var userToLogin = await _userManager.FindByEmailAsync(user.Login);
+
+        if (userToLogin == null)
+        {
+            userToLogin = await _userManager.FindByNameAsync(user.Login);
+        }
+
+        if (userToLogin == null)
+        {
+            responce.Succeed = false;
+            responce.Errors.Add("No user with such login.");
+        }
+        else
+        {
+            var passwordCheck = await _signInManager.CheckPasswordSignInAsync(userToLogin, user.Password, false);
+
+            if (passwordCheck.Succeeded)
+            {
+                responce.Succeed = true;
+                responce.Data = "User successfully logged in.";
+            }
+            else
+            {
+                responce.Succeed = false;
+                responce.Errors.Add("Invalid password.");
+            }
+        }
+
+        return responce;
+    }
+
+    public async Task<Result<UserDTO>> GetUserByIdAsync(string id)
     {
         var responce = new Result<UserDTO>();
         var result = await _userManager.FindByIdAsync(id);
@@ -45,7 +82,7 @@ public class AuthService
         if (result == null)
         {
             responce.Succeed = false;
-            responce.Errors.Add("No such user.");
+            responce.Errors.Add("No user with such id.");
         }
         else
         {
