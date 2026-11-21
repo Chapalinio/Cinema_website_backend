@@ -44,7 +44,7 @@ public class Program
             options.Password.RequiredLength = 6;
 
             options.User.RequireUniqueEmail = true;
-            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-@";
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-";
         }).AddEntityFrameworkStores<AppDbContext>();
 
         builder.Services.AddTransient<AuthService>();
