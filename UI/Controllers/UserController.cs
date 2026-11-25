@@ -48,7 +48,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<bool>> Login([FromBody] UserLoginRequest req)
+    public async Task<ActionResult<LoginResponce>> Login([FromBody] UserLoginRequest req)
     {
         var validationResult = await _loginValidator.ValidateAsync(req);
 
@@ -58,11 +58,11 @@ public class UserController : ControllerBase
 
             if (responce.Succeed)
             {
-                return Ok(true);
+                return Ok(responce.Data);
             }
             else
             {
-                return BadRequest(false);
+                return BadRequest(responce.Errors);
             }
         }
         else
