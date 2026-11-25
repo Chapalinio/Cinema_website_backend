@@ -5,8 +5,12 @@ using DLL.Repositories;
 using DLL.Repositories.Interfaces;
 using Domain.Entities;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using UI.MapperProfile;
 using UI.Validators.Comment;
 using UI.Validators.Film;
@@ -52,7 +56,29 @@ public class Program
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
         }).AddEntityFrameworkStores<AppDbContext>().AddSignInManager();
 
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("JwtBearer", options =>
+        {
+            options.MapInboundClaims = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["JWT: issuer"],
+                ValidAudience = builder.Configuration["JWT: audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT: key"])),
+                ClockSkew = TimeSpan.Zero,
+
+                NameClaimType = JwtRegisteredClaimNames.UniqueName,
+
+            };
+        });
+
+        builder.Services.AddAuthorization();
+
         builder.Services.AddTransient<AuthService>();
+        builder.Services.AddTransient<JwtTokenService>();
 
         builder.Services.AddTransient<IFilmSessionRepository, FilmSessionRepository>();
         builder.Services.AddTransient<FilmSessionService>();
@@ -95,6 +121,7 @@ public class Program
 
         app.UseCors("AllowSpecificOrigin");
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
