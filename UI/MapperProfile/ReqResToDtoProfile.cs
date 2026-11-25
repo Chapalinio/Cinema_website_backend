@@ -18,6 +18,7 @@ public class ReqResToDtoProfile : Profile
         CreateMap<UserRegisterRequest, UserDTO>().ReverseMap();
         CreateMap<UserResponce, UserDTO>().ReverseMap();
         CreateMap<UserProfileResponce, UserDTO>().ReverseMap();
+        CreateMap<LoginResponce, LoginResponceDTO>().ReverseMap();
         CreateMap<UserLoginRequest, UserLoginDTO>();
 
         //FILM
