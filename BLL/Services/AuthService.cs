@@ -11,11 +11,13 @@ public class AuthService
     private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
     private readonly SignInManager<User> _signInManager;
-    public AuthService(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager)
+    private readonly JwtTokenService _tokenService;
+    public AuthService(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager, JwtTokenService tokenService)
     {
         _userManager = userManager;
         _mapper = mapper;
         _signInManager = signInManager;
+        _tokenService = tokenService;
     }
 
     public async Task<Result<UserDTO>> RegisterUserAsync(UserDTO user, string password)
@@ -39,9 +41,9 @@ public class AuthService
         return responce;
     }
 
-    public async Task<Result<string>> LoginAsync(UserLoginDTO user)
+    public async Task<Result<LoginResponceDTO>> LoginAsync(UserLoginDTO user)
     {
-        var responce = new Result<string>();
+        var responce = new Result<LoginResponceDTO>();
 
         var userToLogin = await _userManager.FindByEmailAsync(user.Login);
 
@@ -62,7 +64,7 @@ public class AuthService
             if (passwordCheck.Succeeded)
             {
                 responce.Succeed = true;
-                responce.Data = "User successfully logged in.";
+                responce.Data = await _tokenService.CreateTokenAsync(userToLogin);
             }
             else
             {
